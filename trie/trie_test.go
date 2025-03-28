@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/transientvariable/collection"
-	"github.com/transientvariable/collection/list"
+	"github.com/transientvariable/collection-go"
+	"github.com/transientvariable/collection-go/list"
 
 	"github.com/stretchr/testify/assert"
 )

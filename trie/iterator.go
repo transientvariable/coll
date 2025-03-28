@@ -3,7 +3,7 @@ package trie
 import (
 	"fmt"
 
-	"github.com/transientvariable/collection"
+	"github.com/transientvariable/collection-go"
 )
 
 type iterator struct {

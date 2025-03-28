@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/transientvariable/collection"
+	"github.com/transientvariable/collection-go"
 )
 
 var _ collection.Sequence[any] = (*List[any])(nil)

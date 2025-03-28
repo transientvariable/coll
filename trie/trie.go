@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/transientvariable/collection"
-	"github.com/transientvariable/collection/list"
-	"github.com/transientvariable/sup"
+	"github.com/transientvariable/collection-go"
+	"github.com/transientvariable/collection-go/list"
+	"github.com/transientvariable/support-go"
 )
 
 var _ Trie = (*trie)(nil)
@@ -523,7 +523,7 @@ func (t *trie) String() string {
 		}
 		m[entry.Value()] = entry.Data()
 	}
-	return string(sup.ToJSONFormatted(m))
+	return string(support.ToJSONFormatted(m))
 }
 
 func (t *trie) addNode(ctx *searchContext, node Node) error {

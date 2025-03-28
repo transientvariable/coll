@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/transientvariable/collection"
+	"github.com/transientvariable/collection-go"
 )
 
 type searchResult int

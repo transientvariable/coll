@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/transientvariable/collection"
+	"github.com/transientvariable/collection-go"
 
 	"github.com/stretchr/testify/assert"
 )
