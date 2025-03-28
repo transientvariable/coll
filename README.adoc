@@ -1,13 +1,13 @@
-= Collection
+= collection
 Matt Nicholls <transientvariable@gmail.com>
-:keywords: Golang,Data Structures,Collections
+:keywords: golang,data structures,dsa
 :experimental: true
 :icons: font
 :iconfont-cdn: //cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/fontawesome.min.css
 :imagesdir: docs/image
 :sectanchors: true
 :source-highlighter: prettify
-:toc:
+:toc: left
 :toclevels: 3
 :toc-title: Contents
 
@@ -18,3 +18,20 @@ ifdef::env-github[]
 :caution-caption: :fire:
 :warning-caption: :warning:
 endif::[]
+
+== Overview
+
+Some useful Abstract Data Types (ADTs) with clean interfaces in Go for representing a collection of elements.
+
+== Installation
+
+.Prerequisites
+* The link:https://golang.org/dl/[Golang Runtime], version 1.24.x or later
+
+[source%nowrap,bash]
+----
+❯ go get -u github.com/transientvariable/collection
+----
+
+== License
+This project is licensed under the link:LICENSE[MIT License].
