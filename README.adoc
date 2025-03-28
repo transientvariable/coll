@@ -1,5 +1,5 @@
 = collection
-Matt Nicholls <transientvariable@gmail.com>
+Matt Nicholls <transientvariable@protonmail.com>
 :keywords: golang,data structures,dsa
 :experimental: true
 :icons: font
