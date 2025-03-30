@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/transientvariable/collection-go"
-	"github.com/transientvariable/collection-go/list"
+	"github.com/transientvariable/hold"
+	"github.com/transientvariable/hold/list"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -75,7 +75,7 @@ func TestAddEntry(t *testing.T) {
 	assertSize(t, trie, 0)
 
 	v, err = trie.Entry(e.value)
-	assertError(t, err, collection.ErrCollectionEmpty)
+	assertError(t, err, hold.ErrCollectionEmpty)
 	assert.Equal(t, nil, v)
 }
 
@@ -248,7 +248,7 @@ func assertError(t *testing.T, actual error, expected error) {
 	}
 }
 
-func assertContains(t *testing.T, collection collection.Collection[string], value string, expected bool) {
+func assertContains(t *testing.T, collection hold.Collection[string], value string, expected bool) {
 	t.Helper()
 
 	if collection.Contains(value) != expected {
@@ -272,7 +272,7 @@ func assertNodeValue(t *testing.T, actual any, expected string) {
 	}
 }
 
-func assertSize(t *testing.T, collection collection.Collection[string], expected int) {
+func assertSize(t *testing.T, collection hold.Collection[string], expected int) {
 	t.Helper()
 
 	actual := collection.Len()
@@ -281,7 +281,7 @@ func assertSize(t *testing.T, collection collection.Collection[string], expected
 	}
 }
 
-func assertContentEquals(t *testing.T, collection collection.Collection[string], expected string) {
+func assertContentEquals(t *testing.T, collection hold.Collection[string], expected string) {
 	t.Helper()
 
 	actual := fmt.Sprintf("%s", collection)

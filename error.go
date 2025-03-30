@@ -1,4 +1,4 @@
-package collection
+package hold
 
 const (
 	ErrNoMoreElements   = collectionError("no more elements")

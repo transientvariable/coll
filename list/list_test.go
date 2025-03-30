@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/transientvariable/collection-go"
+	"github.com/transientvariable/hold"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -199,7 +199,7 @@ func TestRemove(t *testing.T) {
 	})
 }
 
-func assertContains(t *testing.T, collection collection.Collection[entry], value entry, expected bool) {
+func assertContains(t *testing.T, collection hold.Collection[entry], value entry, expected bool) {
 	t.Helper()
 	if collection.Contains(value) != expected {
 		if expected {

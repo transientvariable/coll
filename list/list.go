@@ -5,10 +5,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/transientvariable/collection-go"
+	"github.com/transientvariable/hold"
 )
 
-var _ collection.Sequence[any] = (*List[any])(nil)
+var _ hold.Sequence[any] = (*List[any])(nil)
 
 type iterator[E comparable] struct {
 	index int
@@ -25,7 +25,7 @@ func (i *iterator[E]) HasNext() bool {
 func (i *iterator[E]) Next() (E, error) {
 	var n E
 	if !i.HasNext() {
-		return n, fmt.Errorf("list_iter: %w", collection.ErrNoMoreElements)
+		return n, fmt.Errorf("list_iter: %w", hold.ErrNoMoreElements)
 	}
 	n, err := i.list.ValueAt(i.index)
 	if err != nil {
@@ -47,7 +47,7 @@ func (l *List[E]) Add(entry ...E) error {
 }
 
 // AddAll inserts all entries from the provided List into the List.
-func (l *List[E]) AddAll(collection collection.Collection[E]) error {
+func (l *List[E]) AddAll(collection hold.Collection[E]) error {
 	if collection != nil {
 		*l = append(*l, collection.Values()...)
 	}
@@ -114,7 +114,7 @@ func (l *List[E]) IsEmpty() bool {
 }
 
 // Iterate returns the collection.Iterator for the List.
-func (l *List[E]) Iterate() collection.Iterator[E] {
+func (l *List[E]) Iterate() hold.Iterator[E] {
 	return &iterator[E]{list: *l}
 }
 
@@ -216,7 +216,7 @@ func (l *List[E]) String() string {
 
 func (l *List[E]) checkBounds(index int) error {
 	if index < 0 || index > l.Len() {
-		return fmt.Errorf("list: size = %d, requested index = %d: %w", l.Len(), index, collection.ErrBoundsOutOfRange)
+		return fmt.Errorf("list: size = %d, requested index = %d: %w", l.Len(), index, hold.ErrBoundsOutOfRange)
 	}
 	return nil
 }
@@ -227,5 +227,5 @@ func (l *List[E]) findFirst(entry E) (int, error) {
 			return i, nil
 		}
 	}
-	return -1, fmt.Errorf("list: %w", collection.ErrNotFound)
+	return -1, fmt.Errorf("list: %w", hold.ErrNotFound)
 }

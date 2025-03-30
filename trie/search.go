@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/transientvariable/collection-go"
+	"github.com/transientvariable/hold"
 )
 
 type searchResult int
@@ -85,7 +85,7 @@ func (s *searchContext) descendToIndex(index int) int {
 	return index
 }
 
-func (s *searchContext) entriesInSubtree(collection collection.Collection[string]) error {
+func (s *searchContext) entriesInSubtree(collection hold.Collection[string]) error {
 	if s.atLeaf() {
 		if err := collection.Add(s.pointer.Value().Value()); err != nil {
 			return err

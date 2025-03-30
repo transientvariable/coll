@@ -1,4 +1,4 @@
-package collection
+package hold
 
 // Iterator iterates over entries in a Collection.
 type Iterator[E comparable] interface {

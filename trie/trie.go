@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/transientvariable/collection-go"
-	"github.com/transientvariable/collection-go/list"
-	"github.com/transientvariable/support-go"
+	"github.com/transientvariable/hold"
+	"github.com/transientvariable/hold/list"
+	"github.com/transientvariable/anchor"
 )
 
 var _ Trie = (*trie)(nil)
@@ -42,7 +42,7 @@ func (e *entry) String() string {
 
 // Trie ...
 type Trie interface {
-	collection.Ordered[string]
+	hold.Ordered[string]
 
 	// AddEntry inserts the provided Entry into the Trie.
 	//
@@ -52,11 +52,11 @@ type Trie interface {
 	// AddAllEntries inserts the provided collection of entries into the Trie.
 	//
 	// The returned error will be non-nil if the Trie has reached capacity and cannot hold any further entries.
-	AddAllEntries(entries collection.Collection[Entry]) error
+	AddAllEntries(entries hold.Collection[Entry]) error
 
 	// Completions finds all entries in the Trie that match the provided prefix, and appends the matching entries
 	// (if any) to the provided collection.
-	Completions(prefix string, entries collection.Collection[string]) error
+	Completions(prefix string, entries hold.Collection[string]) error
 
 	// Entry returns the entry corresponding to the provided value.
 	//
@@ -79,7 +79,7 @@ type Trie interface {
 
 	// LongestCommonPrefix finds all entries in the Trie that share the longest common prefix with the provided prefix,
 	// and appends the matching entries (if any) to the provided collection.
-	LongestCommonPrefix(prefix string, entries collection.Collection[string]) error
+	LongestCommonPrefix(prefix string, entries hold.Collection[string]) error
 
 	// RemoveEntry removes the first occurrence (if any) of an entry corresponding to the provided Entry.
 	//
@@ -151,7 +151,7 @@ func (t *trie) Add(values ...string) error {
 
 // AddAll inserts all values from the provided collection into the Trie. The returned error will be non-nil if the Trie
 // has reached capacity and cannot hold any further entries.
-func (t *trie) AddAll(values collection.Collection[string]) error {
+func (t *trie) AddAll(values hold.Collection[string]) error {
 	entries := list.List[Entry]{}
 	if values != nil {
 		for _, v := range values.Values() {
@@ -177,7 +177,7 @@ func (t *trie) AddEntry(entry Entry) error {
 
 // AddAllEntries inserts the provided collection of entries into the Trie. The returned error will be non-nil if the
 // Trie has reached capacity and cannot hold any further entries.
-func (t *trie) AddAllEntries(entries collection.Collection[Entry]) error {
+func (t *trie) AddAllEntries(entries hold.Collection[Entry]) error {
 	if entries != nil {
 		for _, v := range entries.Values() {
 			if err := t.AddEntry(v); err != nil {
@@ -198,9 +198,9 @@ func (t *trie) Clear() {
 
 // Completions finds all entries in the Trie that match the provided prefix, and appends the matching entries (if any)
 // to the provided collection.
-func (t *trie) Completions(prefix string, entries collection.Collection[string]) error {
+func (t *trie) Completions(prefix string, entries hold.Collection[string]) error {
 	if t.IsEmpty() {
-		return fmt.Errorf("trie: %w", collection.ErrCollectionEmpty)
+		return fmt.Errorf("trie: %w", hold.ErrCollectionEmpty)
 	}
 
 	ctx := acquireSearchContext(t.digitizer)
@@ -284,7 +284,7 @@ func (t *trie) IsEmpty() bool {
 }
 
 // Iterate returns the collection.Iterator for the Trie.
-func (t *trie) Iterate() collection.Iterator[string] {
+func (t *trie) Iterate() hold.Iterator[string] {
 	return newIterator(t, t.head)
 }
 
@@ -315,9 +315,9 @@ func (t *trie) Len() int {
 
 // LongestCommonPrefix finds all entries in the Trie that share the longest common prefix with the provided prefix,
 // and appends the matching entries (if any) to the provided collection.
-func (t *trie) LongestCommonPrefix(prefix string, entries collection.Collection[string]) error {
+func (t *trie) LongestCommonPrefix(prefix string, entries hold.Collection[string]) error {
 	if t.IsEmpty() {
-		return fmt.Errorf("trie: %w", collection.ErrCollectionEmpty)
+		return fmt.Errorf("trie: %w", hold.ErrCollectionEmpty)
 	}
 
 	ctx := acquireSearchContext(t.digitizer)
@@ -347,7 +347,7 @@ func (t *trie) LongestCommonPrefix(prefix string, entries collection.Collection[
 // order is returned.
 func (t *trie) Min() (string, error) {
 	if t.IsEmpty() {
-		return "", fmt.Errorf("trie: %w", collection.ErrCollectionEmpty)
+		return "", fmt.Errorf("trie: %w", hold.ErrCollectionEmpty)
 	}
 	return t.head.Next().Value().Value(), nil
 }
@@ -356,7 +356,7 @@ func (t *trie) Min() (string, error) {
 // order is returned.
 func (t *trie) Max() (string, error) {
 	if t.IsEmpty() {
-		return "", fmt.Errorf("trie: %w", collection.ErrCollectionEmpty)
+		return "", fmt.Errorf("trie: %w", hold.ErrCollectionEmpty)
 	}
 	return t.tail.Previous().Value().Value(), nil
 }
@@ -365,11 +365,11 @@ func (t *trie) Max() (string, error) {
 // entry before the first occurrence of the provided entry in iteration order is returned.
 func (t *trie) Predecessor(value string) (string, error) {
 	if t.IsEmpty() {
-		return value, fmt.Errorf("trie: %w", collection.ErrCollectionEmpty)
+		return value, fmt.Errorf("trie: %w", hold.ErrCollectionEmpty)
 	}
 
 	if value = strings.TrimSpace(value); value == "" {
-		return value, fmt.Errorf("trie: %w", collection.ErrValueRequired)
+		return value, fmt.Errorf("trie: %w", hold.ErrValueRequired)
 	}
 
 	ctx := acquireSearchContext(t.digitizer)
@@ -388,7 +388,7 @@ func (t *trie) Predecessor(value string) (string, error) {
 	if m {
 		return ctx.pointer.Value().Value(), nil
 	}
-	return value, fmt.Errorf("trie: %w", collection.ErrNotFound)
+	return value, fmt.Errorf("trie: %w", hold.ErrNotFound)
 }
 
 // Remove removes the first occurrence (if any) of an entry equivalent to the provided node. If an entry was
@@ -401,11 +401,11 @@ func (t *trie) Remove(value string) (bool, error) {
 // was removed, the return node will be true, otherwise false will be returned.
 func (t *trie) RemoveEntry(entry Entry) (bool, error) {
 	if t.IsEmpty() {
-		return false, fmt.Errorf("trie: %w", collection.ErrCollectionEmpty)
+		return false, fmt.Errorf("trie: %w", hold.ErrCollectionEmpty)
 	}
 
 	if entry == nil {
-		return false, fmt.Errorf("trie: %w", collection.ErrValueRequired)
+		return false, fmt.Errorf("trie: %w", hold.ErrValueRequired)
 	}
 
 	ctx := acquireSearchContext(t.digitizer)
@@ -430,11 +430,11 @@ func (t *trie) RemoveEntry(entry Entry) (bool, error) {
 // entry after the first occurrence of the provided node in iteration order is returned.
 func (t *trie) Successor(value string) (string, error) {
 	if t.IsEmpty() {
-		return value, fmt.Errorf("trie: %w", collection.ErrCollectionEmpty)
+		return value, fmt.Errorf("trie: %w", hold.ErrCollectionEmpty)
 	}
 
 	if value = strings.TrimSpace(value); value == "" {
-		return value, fmt.Errorf("trie: %w", collection.ErrValueRequired)
+		return value, fmt.Errorf("trie: %w", hold.ErrValueRequired)
 	}
 
 	ctx := acquireSearchContext(t.digitizer)
@@ -467,7 +467,7 @@ func (t *trie) Successor(value string) (string, error) {
 	if !successor.IsTail() {
 		return successor.Value().Value(), nil
 	}
-	return value, fmt.Errorf("trie: %w", collection.ErrNotFound)
+	return value, fmt.Errorf("trie: %w", hold.ErrNotFound)
 }
 
 // ValueAt returns the entry at the position specified by the provided index. The returned error will be
@@ -569,7 +569,7 @@ func (t *trie) checkBounds(index int) error {
 
 func (t *trie) find(ctx *searchContext, value string) (searchResult, error) {
 	if value = strings.TrimSpace(value); value == "" {
-		return -1, fmt.Errorf("trie: %w", collection.ErrNotFound)
+		return -1, fmt.Errorf("trie: %w", hold.ErrNotFound)
 	}
 
 	if t.IsEmpty() {
@@ -657,11 +657,11 @@ func (t *trie) moveToPredecessor(ctx *searchContext, value string, searchResult 
 
 func (t *trie) node(value string) (Node, error) {
 	if t.IsEmpty() {
-		return nil, fmt.Errorf("trie: %w", collection.ErrCollectionEmpty)
+		return nil, fmt.Errorf("trie: %w", hold.ErrCollectionEmpty)
 	}
 
 	if value = strings.TrimSpace(value); value == "" {
-		return nil, fmt.Errorf("trie: %w", collection.ErrValueRequired)
+		return nil, fmt.Errorf("trie: %w", hold.ErrValueRequired)
 	}
 
 	ctx := acquireSearchContext(t.digitizer)
@@ -675,7 +675,7 @@ func (t *trie) node(value string) (Node, error) {
 	if r == Matched {
 		return ctx.pointer, nil
 	}
-	return nil, fmt.Errorf("trie: %w", collection.ErrNotFound)
+	return nil, fmt.Errorf("trie: %w", hold.ErrNotFound)
 }
 
 func (t *trie) prepareSearch(ctx *searchContext) {

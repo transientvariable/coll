@@ -1,4 +1,4 @@
-= collection
+= hold
 Matt Nicholls <transientvariable@protonmail.com>
 :keywords: golang,data structures,dsa
 :experimental: true
@@ -30,7 +30,7 @@ Some useful Abstract Data Types (ADTs) with clean interfaces in Go for represent
 
 [source%nowrap,bash]
 ----
-❯ go get -u github.com/transientvariable/collection-go
+❯ go get -u github.com/transientvariable/hold
 ----
 
 == License

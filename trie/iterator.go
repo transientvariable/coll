@@ -3,7 +3,7 @@ package trie
 import (
 	"fmt"
 
-	"github.com/transientvariable/collection-go"
+	"github.com/transientvariable/hold"
 )
 
 type iterator struct {
@@ -45,7 +45,7 @@ func (i *iterator) advance() bool {
 
 func (i *iterator) get() (Entry, error) {
 	if !i.inCollection() {
-		return nil, fmt.Errorf("trie: %w", collection.ErrNotFound)
+		return nil, fmt.Errorf("trie: %w", hold.ErrNotFound)
 	}
 	return i.pointer.Value(), nil
 }
