@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
+	"github.com/transientvariable/anchor"
 	"github.com/transientvariable/hold"
 	"github.com/transientvariable/hold/list"
-	"github.com/transientvariable/anchor"
 )
 
 var _ Trie = (*trie)(nil)
@@ -523,7 +523,7 @@ func (t *trie) String() string {
 		}
 		m[entry.Value()] = entry.Data()
 	}
-	return string(support.ToJSONFormatted(m))
+	return string(anchor.ToJSONFormatted(m))
 }
 
 func (t *trie) addNode(ctx *searchContext, node Node) error {
