@@ -19,6 +19,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
+
 == Overview
 
 Some useful Abstract Data Types (ADTs) with clean interfaces in Go for representing a collection of elements.
