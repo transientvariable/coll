@@ -12,15 +12,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAdd(t *testing.T) {
+func TestTrie_Add(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	t.Run("ab", func(t *testing.T) {
 		value := "ab"
 		err := trie.Add(value)
-		assertError(t, err, nil)
-		assertSize(t, trie, 1)
+		assert.NoError(t, err)
+		assert.Equal(t, trie.Len(), 1)
 		assertContains(t, trie, value, true)
 		assertContains(t, trie, "abc", false)
 		assertContains(t, trie, "a", false)
@@ -30,31 +30,31 @@ func TestAdd(t *testing.T) {
 	t.Run("abcd", func(t *testing.T) {
 		value := "abcd"
 		err := trie.Add(value)
-		assertError(t, err, nil)
-		assertSize(t, trie, 2)
+		assert.NoError(t, err)
+		assert.Equal(t, trie.Len(), 2)
 		assertContains(t, trie, value, true)
 	})
 
 	t.Run("acb", func(t *testing.T) {
 		value := "acb"
 		err := trie.Add(value)
-		assertError(t, err, nil)
-		assertSize(t, trie, 3)
+		assert.NoError(t, err)
+		assert.Equal(t, trie.Len(), 3)
 		assertContains(t, trie, value, true)
 	})
 
 	t.Run("cbca", func(t *testing.T) {
 		value := "cbca"
 		err := trie.Add(value)
-		assertError(t, err, nil)
-		assertSize(t, trie, 4)
+		assert.NoError(t, err)
+		assert.Equal(t, trie.Len(), 4)
 		assertContains(t, trie, value, true)
 	})
 }
 
-func TestAddEntry(t *testing.T) {
+func TestTrie_AddEntry(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	e := &entry{
 		value: "dog",
@@ -62,12 +62,12 @@ func TestAddEntry(t *testing.T) {
 	}
 
 	err = trie.AddEntry(e)
-	assertError(t, err, nil)
-	assertSize(t, trie, 1)
+	assert.NoError(t, err)
+	assert.Equal(t, trie.Len(), 1)
 	assertContains(t, trie, e.value, true)
 
 	v, err := trie.Entry(e.value)
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assert.Equal(t, e.value, v.Value())
 	assert.Equal(t, e.data, v.Data())
 
@@ -79,13 +79,13 @@ func TestAddEntry(t *testing.T) {
 	assert.Equal(t, nil, v)
 }
 
-func TestAddAll(t *testing.T) {
+func TestTrie_AddAll(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	err = trie.AddAll(&list.List[string]{"the", "quick", "brown", "fox"})
-	assertError(t, err, nil)
-	assertSize(t, trie, 4)
+	assert.NoError(t, err)
+	assert.Equal(t, trie.Len(), 4)
 	assertContains(t, trie, "the", true)
 	assertContains(t, trie, "quick", true)
 	assertContains(t, trie, "brown", true)
@@ -93,13 +93,13 @@ func TestAddAll(t *testing.T) {
 	assertContentEquals(t, trie, "[brown, fox, quick, the]")
 }
 
-func TestRemove(t *testing.T) {
+func TestTrie_Remove(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	err = trie.AddAll(&list.List[string]{"jumped", "over", "the", "lazy", "dog"})
-	assertError(t, err, nil)
-	assertSize(t, trie, 5)
+	assert.NoError(t, err)
+	assert.Equal(t, trie.Len(), 5)
 	assertContains(t, trie, "jumped", true)
 	assertContains(t, trie, "over", true)
 	assertContains(t, trie, "the", true)
@@ -108,17 +108,17 @@ func TestRemove(t *testing.T) {
 	assertContentEquals(t, trie, "[dog, jumped, lazy, over, the]")
 
 	r, err := trie.Remove("lazy")
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assert.True(t, r, "expected result for removal of node 'lazy' to be true")
 
 	r, err = trie.Remove("the")
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assert.True(t, r, "expected result for removal of node 'the' to be true")
 
 	r, err = trie.Remove("fox")
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assert.False(t, r, "expected result for removal of node 'fox' to be false")
-	assertSize(t, trie, 3)
+	assert.Equal(t, trie.Len(), 3)
 	assertContains(t, trie, "lazy", false)
 	assertContains(t, trie, "the", false)
 	assertContentEquals(t, trie, "[dog, jumped, over]")
@@ -127,110 +127,110 @@ func TestRemove(t *testing.T) {
 	assertSize(t, trie, 0)
 }
 
-func TestMinMax(t *testing.T) {
+func TestTrie_MinMax(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	err = trie.AddAll(&list.List[string]{"cba", "ab", "bce", "abcd"})
-	assertError(t, err, nil)
-	assertSize(t, trie, 4)
+	assert.NoError(t, err)
+	assert.Equal(t, trie.Len(), 4)
 	assertContentEquals(t, trie, "[ab, abcd, bce, cba]")
 
-	min, err := trie.Min()
-	assertError(t, err, nil)
-	assertNodeValue(t, min, "ab")
+	tmin, err := trie.Min()
+	assert.NoError(t, err)
+	assertNodeValue(t, tmin, "ab")
 
-	max, err := trie.Max()
-	assertError(t, err, nil)
-	assertNodeValue(t, max, "cba")
+	tmax, err := trie.Max()
+	assert.NoError(t, err)
+	assertNodeValue(t, tmax, "cba")
 }
 
-func TestPredecessor(t *testing.T) {
+func TestTrie_Predecessor(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	err = trie.AddAll(&list.List[string]{"bac", "dab", "dabb", "dac", "daca", "dabba", "ab"})
-	assertError(t, err, nil)
-	assertSize(t, trie, 7)
+	assert.NoError(t, err)
+	assert.Equal(t, trie.Len(), 7)
 	assertContentEquals(t, trie, "[ab, bac, dab, dabb, dabba, dac, daca]")
 
 	p, err := trie.Predecessor("dabba")
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertNodeValue(t, p, "dabb")
 
 	p, err = trie.Predecessor("bac")
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertNodeValue(t, p, "ab")
 }
 
-func TestSuccessor(t *testing.T) {
+func TestTrie_Successor(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	err = trie.AddAll(&list.List[string]{"bac", "dab", "dabb", "dac", "daca", "dabba", "ab"})
-	assertError(t, err, nil)
-	assertSize(t, trie, 7)
+	assert.NoError(t, err)
+	assert.Equal(t, trie.Len(), 7)
 	assertContentEquals(t, trie, "[ab, bac, dab, dabb, dabba, dac, daca]")
 
 	s, err := trie.Successor("dabba")
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertNodeValue(t, s, "dac")
 
 	s, err = trie.Successor("bac")
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertNodeValue(t, s, "dab")
 }
 
-func TestCompletions(t *testing.T) {
+func TestTrie_Completions(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	err = trie.AddAll(&list.List[string]{"acb", "dabc", "daca", "da", "ab"})
-	assertError(t, err, nil)
-	assertSize(t, trie, 5)
+	assert.NoError(t, err)
+	assert.Equal(t, trie.Len(), 5)
 	assertContentEquals(t, trie, "[ab, acb, da, dabc, daca]")
 
 	l := list.List[string]{}
 	err = trie.Completions("a", &l)
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertContentEquals(t, &l, "[ab, acb]")
 
 	l.Clear()
 	err = trie.Completions("da", &l)
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertContentEquals(t, &l, "[da, dabc, daca]")
 }
 
-func TestLongestCommonPrefix(t *testing.T) {
+func TestTrie_LongestCommonPrefix(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	err = trie.AddAll(&list.List[string]{"acb", "dadc", "dada", "da", "ab"})
-	assertError(t, err, nil)
-	assertSize(t, trie, 5)
+	assert.NoError(t, err)
+	assert.Equal(t, trie.Len(), 5)
 	assertContentEquals(t, trie, "[ab, acb, da, dada, dadc]")
 
 	l := list.List[string]{}
 	err = trie.LongestCommonPrefix("a", &l)
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertContentEquals(t, &l, "[ab, acb]")
 
 	l.Clear()
 	err = trie.LongestCommonPrefix("dadda", &l)
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertContentEquals(t, &l, "[dada, dadc]")
 }
 
-func TestValueAt(t *testing.T) {
+func TestTrie_ValueAt(t *testing.T) {
 	trie, err := New()
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 
 	err = trie.AddAll(&list.List[string]{"Luffy", "Zoro", "Tony Chopper", "Sanji", "Frankie"})
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assertContentEquals(t, trie, "[Frankie, Luffy, Sanji, Tony Chopper, Zoro]")
 
 	entry, err := trie.ValueAt(2)
-	assertError(t, err, nil)
+	assert.NoError(t, err)
 	assert.Equal(t, "Sanji", entry.Value())
 }
 

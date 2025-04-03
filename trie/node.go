@@ -33,7 +33,6 @@ func newNode(capacity int) Node {
 	if capacity <= 0 {
 		return &node{}
 	}
-
 	return &node{children: make([]Node, capacity)}
 }
 
@@ -105,7 +104,6 @@ func (n *node) RemoveChildAt(index int) bool {
 	if n.children[index] != nil {
 		n.children[index] = nil
 		n.numChildren--
-
 		return true
 	}
 	return false

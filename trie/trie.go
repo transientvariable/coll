@@ -5,7 +5,6 @@ import (
 	"io"
 	"strings"
 
-	"github.com/transientvariable/anchor"
 	"github.com/transientvariable/hold"
 	"github.com/transientvariable/hold/list"
 )
@@ -511,19 +510,19 @@ func (t *trie) Values() []string {
 // String returns a string representation of the Trie in its current state.
 func (t *trie) String() string {
 	if t.Len() == 0 {
-		return "{}"
+		return "[]"
 	}
 
-	m := make(map[string]any)
-	iter := newIterator(t, t.head)
-	for iter.advance() {
-		entry, err := iter.get()
+	values := make([]string, 0, t.Len())
+	iter := t.Iterate()
+	for iter.HasNext() {
+		v, err := iter.Next()
 		if err != nil {
-			return fmt.Sprintf(`{error: "%s"}`, err.Error())
+			return fmt.Sprintf("[error: %s]", err.Error())
 		}
-		m[entry.Value()] = entry.Data()
+		values = append(values, fmt.Sprintf("%s", v))
 	}
-	return string(anchor.ToJSONFormatted(m))
+	return "[" + strings.Join(values, ", ") + "]"
 }
 
 func (t *trie) addNode(ctx *searchContext, node Node) error {
@@ -631,7 +630,6 @@ func (t *trie) insert(entry Entry) (Node, error) {
 	} else {
 		leaf.AddAfter(t.head)
 	}
-
 	t.size++
 	return leaf, nil
 }
